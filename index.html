@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>层级 404 - 迷失接口 | 后室网络节点</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 后室风格基础设定 */
+        :root {
+            --backrooms-yellow: #e9d66b;
+            --fluorescent-flicker: #f0f8c0;
+            --concrete-gray: #7a7a7a;
+            --hazard-red: #c11b17;
+            --entity-shadow: #3a3a3a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #1a1a1a;
+            color: #ccc;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(58, 58, 58, 0.1),
+                    rgba(58, 58, 58, 0.1) 1px,
+                    transparent 1px,
+                    transparent 20px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(58, 58, 58, 0.1),
+                    rgba(58, 58, 58, 0.1) 1px,
+                    transparent 1px,
+                    transparent 20px
+                );
+        }
+        
+        /* 荧光灯管故障效果 */
+        .fluorescent-flicker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                180deg,
+                rgba(240, 248, 192, 0.05),
+                rgba(240, 248, 192, 0.15) 2px,
+                transparent 3px,
+                transparent 8px
+            );
+            animation: flicker 3s infinite alternate;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: rgba(30, 30, 30, 0.85);
+            border: 1px solid #444;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            position: relative;
+            z-index: 10;
+            border-left: 5px solid var(--hazard-red);
+        }
+        
+        /* M.E.G.数据库文档标题 */
+        .database-header {
+            border-bottom: 1px dashed #555;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .database-header h1 {
+            font-size: 2.8rem;
+            color: var(--backrooms-yellow);
+            text-shadow: 0 0 10px rgba(233, 214, 107, 0.3);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .database-header h2 {
+            font-size: 1.3rem;
+            font-weight: normal;
+            color: #aaa;
+        }
+        
+        .level-tag {
+            position: absolute;
+            top: 10px;
+            right: 0;
+            background: #333;
+            padding: 5px 10px;
+            border: 1px solid #555;
+            font-size: 0.9rem;
+            color: var(--hazard-red);
+        }
+        
+        /* 生存难度标识 */
+        .survival-difficulty {
+            display: flex;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(50, 20, 20, 0.3);
+            border-left: 3px solid var(--hazard-red);
+        }
+        
+        .difficulty-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .difficulty-item h3 {
+            color: var(--hazard-red);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .difficulty-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        /* 后室内容区域 */
+        .backrooms-content {
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+        
+        .backrooms-content p {
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .entity-warning {
+            background: rgba(193, 27, 23, 0.15);
+            border: 1px solid var(--hazard-red);
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .entity-warning:before {
+            content: "⚠️ 实体威胁";
+            position: absolute;
+            top: -12px;
+            left: 15px;
+            background: #1a1a1a;
+            padding: 0 10px;
+            color: var(--hazard-red);
+            font-size: 0.9rem;
+        }
+        
+        /* 导航按钮 */
+        .navigation-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .nav-button {
+            padding: 15px;
+            background: #333;
+            border: 1px solid #444;
+            color: var(--backrooms-yellow);
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-button:hover {
+            background: #3a3a3a;
+            border-color: #555;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .nav-button:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(233, 214, 107, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+        
+        .nav-button:hover:before {
+            left: 100%;
+        }
+        
+        /* 数据库信息 */
+        .database-info {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px dashed #555;
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        /* 故障动画 */
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                opacity: 0.8;
+            }
+            20%, 24%, 55% {
+                opacity: 0.2;
+            }
+        }
+        
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+            20% {
+                transform: translate(-3px, 3px);
+            }
+            40% {
+                transform: translate(-3px, -3px);
+            }
+            60% {
+                transform: translate(3px, 3px);
+            }
+            80% {
+                transform: translate(3px, -3px);
+            }
+            100% {
+                transform: translate(0);
+            }
+        }
+        
+        .glitch {
+            animation: glitch 0.5s infinite;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .survival-difficulty {
+                flex-direction: column;
+            }
+            
+            .difficulty-item {
+                margin-bottom: 15px;
+            }
+            
+            .database-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fluorescent-flicker"></div>
+    
+    <div class="container">
+        <div class="database-header">
+            <h1 class="glitch">层级 404</h1>
+            <h2>"迷失接口" - 数字虚空节点</h2>
+            <div class="level-tag">M.E.G. 数据库 ID: LV-404</div>
+        </div>
+        
+        <div class="survival-difficulty">
+            <div class="difficulty-item">
+                <h3>安全性</h3>
+                <div class="difficulty-value">不稳定</div>
+            </div>
+            <div class="difficulty-item">
+                <h3>楼层稳定性</h3>
+                <div class="difficulty-value">波动</div>
+            </div>
+            <div class="difficulty-item">
+                <h3>实体数量</h3>
+                <div class="difficulty-value">未知</div>
+            </div>
+        </div>
+        
+        <div class="backrooms-content">
+            <p>
+                <strong>描述：</strong> Level 404是一个由破碎数字信号构成的非欧几里得空间，表现为被遗弃的互联网基础设施与后室物理规则异常混合体:cite[1]:cite[9]。此层级由无限延伸的服务器机房走廊、闪烁的故障监视器和缠绕的网线组成，空气中弥漫着臭氧与服务器过热的金属气味。墙壁随机浮现HTTP状态代码，其中404出现频率达73.6%:cite[5]。
+            </p>
+            
+            <p>
+                该层级Wi-Fi信号强烈但极不稳定，连接后会持续收到来自"后室网络异常部（B.N.A.D）"的加密警告数据包。所有试图访问外部网站的请求将被重定向至M.E.G.实体威胁数据库:cite[3]:cite[7]。
+            </p>
+            
+            <div class="entity-warning">
+                已检测到实体活动：监视者（Watchers）的电子变种常潜伏于未通电的服务器机柜中，其表现形式为屏幕上的静态人脸（安全协议：避免与任何屏幕中的眼睛对视超过3秒）。层级深处检测到类爬菌（Crawler）的热信号，推测其已适应数据中心的冷通道环境:cite[3]:cite[7]。
+            </div>
+            
+            <p>
+                <strong>入口与出口：</strong><br>
+                • <strong>入口：</strong> 在Level 2的裸露电缆上接触异常电流；于Level 5的192号房古董调制解调器拨号；在Level 11的废弃网吧触发蓝屏死机:cite[1]:cite[5]<br>
+                • <strong>出口：</strong> 寻找发绿光的紧急出口标志（7%概率通向Level 11）；连续点击故障监视器27次可能切出至Level 69；被实体追逐时跌入地板电缆井有几率坠入Level 8:cite[3]:cite[9]
+            </p>
+        </div>
+        
+        <div class="navigation-buttons">
+            <a href="#" class="nav-button">
+                <i class="fas fa-home"></i> 返回枢纽（Level 1）
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-wifi"></i> 连接M.E.G.安全热点
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-exclamation-triangle"></i> 实体威胁数据库
+            </a>
+            <a href="#" class="nav-button">
+                <i class="fas fa-map"></i> 层级导航协议
+            </a>
+        </div>
+        
+        <div class="database-info">
+            <p>
+                <i class="fas fa-database"></i> <strong>M.E.G. 数据库更新：</strong> 2025-06-08<br>
+                <i class="fas fa-exclamation-circle"></i> 警告：所有进入404层级的探险者需携带信号干扰器，实体对未加密设备表现出攻击性偏好<br>
+                » <i>该文档符合后室数字生存协议-7标准</i>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
