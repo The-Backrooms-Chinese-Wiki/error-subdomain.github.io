@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+ 
 <head>
+    <meta name="robots" content="noindex,nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>错误的子域名</title>
+    <title>无效子域</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 后室风格基础设定 */
@@ -14,14 +16,14 @@
             --hazard-red: #c11b17;
             --entity-shadow: #3a3a3a;
         }
-        
+ 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Courier New', monospace;
         }
-        
+ 
         body {
             background-color: #1a1a1a;
             color: #ccc;
@@ -31,23 +33,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: 
-                repeating-linear-gradient(
-                    0deg,
+            background-image:
+                repeating-linear-gradient(0deg,
                     rgba(58, 58, 58, 0.1),
                     rgba(58, 58, 58, 0.1) 1px,
                     transparent 1px,
-                    transparent 20px
-                ),
-                repeating-linear-gradient(
-                    90deg,
+                    transparent 20px),
+                repeating-linear-gradient(90deg,
                     rgba(58, 58, 58, 0.1),
                     rgba(58, 58, 58, 0.1) 1px,
                     transparent 1px,
-                    transparent 20px
-                );
+                    transparent 20px);
         }
-        
+ 
         /* 荧光灯管故障效果 */
         .fluorescent-flicker {
             position: absolute;
@@ -55,18 +53,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                180deg,
-                rgba(240, 248, 192, 0.05),
-                rgba(240, 248, 192, 0.15) 2px,
-                transparent 3px,
-                transparent 8px
-            );
+            background: repeating-linear-gradient(180deg,
+                    rgba(240, 248, 192, 0.05),
+                    rgba(240, 248, 192, 0.15) 2px,
+                    transparent 3px,
+                    transparent 8px);
             animation: flicker 3s infinite alternate;
             z-index: -1;
             pointer-events: none;
         }
-        
+ 
         .container {
             max-width: 800px;
             width: 90%;
@@ -78,7 +74,7 @@
             z-index: 10;
             border-left: 5px solid var(--hazard-red);
         }
-        
+ 
         /* M.E.G.数据库文档标题 */
         .database-header {
             border-bottom: 1px dashed #555;
@@ -86,7 +82,7 @@
             margin-bottom: 25px;
             position: relative;
         }
-        
+ 
         .database-header h1 {
             font-size: 2.8rem;
             color: var(--backrooms-yellow);
@@ -94,13 +90,13 @@
             letter-spacing: 2px;
             margin-bottom: 5px;
         }
-        
+ 
         .database-header h2 {
             font-size: 1.3rem;
             font-weight: normal;
             color: #aaa;
         }
-        
+ 
         .level-tag {
             position: absolute;
             top: 10px;
@@ -111,7 +107,7 @@
             font-size: 0.9rem;
             color: var(--hazard-red);
         }
-        
+ 
         /* 生存难度标识 */
         .survival-difficulty {
             display: flex;
@@ -120,36 +116,36 @@
             background: rgba(50, 20, 20, 0.3);
             border-left: 3px solid var(--hazard-red);
         }
-        
+ 
         .difficulty-item {
             flex: 1;
             text-align: center;
             padding: 10px;
         }
-        
+ 
         .difficulty-item h3 {
             color: var(--hazard-red);
             font-size: 1.1rem;
             margin-bottom: 8px;
         }
-        
+ 
         .difficulty-value {
             font-size: 1.8rem;
             font-weight: bold;
             color: #fff;
         }
-        
+ 
         /* 后室内容区域 */
         .backrooms-content {
             line-height: 1.7;
             margin-bottom: 30px;
         }
-        
+ 
         .backrooms-content p {
             margin-bottom: 20px;
             text-align: justify;
         }
-        
+ 
         .entity-warning {
             background: rgba(193, 27, 23, 0.15);
             border: 1px solid var(--hazard-red);
@@ -157,9 +153,9 @@
             margin: 20px 0;
             position: relative;
         }
-        
-        .entity-warning:before {
-            content: "⚠️ 实体威胁";
+ 
+        .error-warning:before {
+            content: "⚠️ 错误内容";
             position: absolute;
             top: -12px;
             left: 15px;
@@ -168,7 +164,7 @@
             color: var(--hazard-red);
             font-size: 0.9rem;
         }
-        
+ 
         /* 导航按钮 */
         .navigation-buttons {
             display: grid;
@@ -176,7 +172,7 @@
             gap: 15px;
             margin-top: 30px;
         }
-        
+ 
         .nav-button {
             padding: 15px;
             background: #333;
@@ -188,34 +184,20 @@
             position: relative;
             overflow: hidden;
         }
-        
+ 
         .nav-button:hover {
             background: #3a3a3a;
             border-color: #555;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
-        
-        .nav-button:before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(233, 214, 107, 0.2),
-                transparent
-            );
-            transition: 0.5s;
-        }
-        
+ 
+ 
+ 
         .nav-button:hover:before {
             left: 100%;
         }
-        
+ 
         /* 数据库信息 */
         .database-info {
             margin-top: 30px;
@@ -224,108 +206,97 @@
             font-size: 0.85rem;
             color: #777;
         }
-        
+ 
         /* 故障动画 */
         @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+ 
+            0%,
+            19%,
+            21%,
+            23%,
+            25%,
+            54%,
+            56%,
+            100% {
                 opacity: 0.8;
             }
-            20%, 24%, 55% {
+ 
+            20%,
+            24%,
+            55% {
                 opacity: 0.2;
             }
         }
-        
+ 
         @keyframes glitch {
             0% {
                 transform: translate(0);
             }
+ 
             20% {
                 transform: translate(-3px, 3px);
             }
+ 
             40% {
                 transform: translate(-3px, -3px);
             }
+ 
             60% {
                 transform: translate(3px, 3px);
             }
+ 
             80% {
                 transform: translate(3px, -3px);
             }
+ 
             100% {
                 transform: translate(0);
             }
         }
-        
+ 
         .glitch {
             animation: glitch 0.5s infinite;
         }
-        
+ 
         /* 响应式设计 */
         @media (max-width: 768px) {
             .survival-difficulty {
                 flex-direction: column;
             }
-            
+ 
             .difficulty-item {
                 margin-bottom: 15px;
             }
-            
+ 
             .database-header h1 {
                 font-size: 2.2rem;
             }
         }
     </style>
 </head>
+ 
 <body>
     <div class="fluorescent-flicker"></div>
-    
+ 
     <div class="container">
+        <p>
         <div class="database-header">
-            <h1 class="glitch">连接错误</h1>
-            <h2>"迷失接口" - 数字虚空节点</h2>
-            <div class="level-tag">M.E.G. 数据库 ID:Error - 404</div>
+            <h1 class="glitch">Error 404</h1>
+            <h2>"迷失接口" - 无效的子域名</h2>
+            <div class="level-tag">后室中文数据库 Error.</div>
         </div>
-        
-        <strong>该子域尚未被使用或是配置错误，请检查您的网络连接与输入的网站地址。</strong>
-
-        <div class="survival-difficulty">
-            <div class="difficulty-item">
-                <h3>安全性</h3>
-                <div class="difficulty-value">不安全</div>
-            </div>
-            <div class="difficulty-item">
-                <h3>稳定性</h3>
-                <div class="difficulty-value">波动</div>
-            </div>
-            <div class="difficulty-item">
-                <h3>实体数量</h3>
-                <div class="difficulty-value">未知</div>
-            </div>
-        </div>
-        
         <div class="backrooms-content">
-            <p>
-
-        
-        <div class="navigation-buttons">
-            <a href="https://backroomszh.wiki" class="nav-button">
-                <i class="fas fa-home"></i> 返回数据库
-            </a>
-            <a href="mailto:support@backroomszh.wiki" class="nav-button">
-                <i class="fas fa-exclamation-triangle"></i> 联系M.E.G.
-            </a>
-            <a href="/" class="nav-button">
-                <i class="fas fa-map"></i> 刷新信息
-            </a>
-        </div>
-        
-        <div class="database-info">
-            <p>
-                <i class="fas fa-database"></i> <strong>M.E.G. 数据库更新：</strong> 2025-06-08<br>
-                <i class="fas fa-exclamation-circle"></i> 警告：所有进入该层级的探险者需携带信号干扰器，实体对未加密设备表现出攻击性偏好<br>
-                » <i>该文档符合后室数字生存协议-7标准</i>
+            <div class="error-warning">
+                该子域名尚未被启用，请检查是否输错域名。如果域名正确，则很可能是由于该域名刚刚被配置，尚未上传至位于世界各地的DNS服务器。<br><br>请尝试刷新页面，或是前往主页。
+            </div><br>
+            <center>
+                <a href="https://www.backroomszh.org" class="nav-button">
+                    <i class="fas fa-home"></i> 返回主页
+                </a>
+            </center>
             </p>
         </div>
     </div>
 </body>
+ 
 </html>
